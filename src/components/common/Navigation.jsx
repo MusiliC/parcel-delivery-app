@@ -102,7 +102,14 @@ const Navigation = ({ isTopOfPage }) => {
                 </p>
               ))}
 
-            <p>Log Out</p>
+            <Link to={"/sign"}>
+              <button
+                className="text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"
+                onClick={() => setIsMenuToggled(!isMenuToggled)}
+              >
+                Log Out
+              </button>
+            </Link>
           </div>
         </div>
       )}
