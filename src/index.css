@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  @apply text-gray-500;
+}
+
+.button {
+  @apply rounded-md bg-primary-500 font-semibold text-white px-10 py-2 hover:bg-secondary-100 hover:text-black;
+}
+
+/* .inputStyles {
+  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline;
+} */
+
+
+.inputStyles{
+  @apply shadow-sm  border rounded w-full mb-2 py-1.5 px-3  focus:outline-none
+}
+
+.labelStyles {
+  @apply w-full;
+}
