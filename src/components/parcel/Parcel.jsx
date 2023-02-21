@@ -1,8 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import picture from "../../assets/picture.png";
 import OneParcel from "./OneParcel";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { createParcel, getParcels } from "../../redux/actions/parcelActions";
+import FormInputErrorAlert from "../common/FormInputErrorAlert";
 
-const Parcel = () => {
+const Parcel = ({ auth }) => {
+  const [postingData, setPostingData] = useState(false);
+
+  const dispatch = useDispatch();
+  const parcels = useSelector((state) => state.parcelReducer.parcels);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const handleInput = async (data) => {
+    const obj = {
+      ...data,
+      sender: auth.id,
+    };
+
+    setPostingData(true);
+    await dispatch(createParcel(obj));
+    setPostingData(false);
+  };
+
+  useEffect(() => {
+    dispatch(getParcels());
+  }, []);
+
+  useEffect(() => {}, [auth]);
   return (
     <section className="py-28 min-h-[90vh]">
       <div className="w-[90%] md:w-4/6 lg:w-5/6 mx-auto  lg:min-h-[80vh]  lg:flex justify-between gap-8 items-center">
@@ -17,52 +50,175 @@ const Parcel = () => {
               Create Parcel
             </h2>
           </div>
-          <form action="" className="">
+          <form action="" className="" onSubmit={handleSubmit(handleInput)}>
             <label htmlFor="">Parcel Label</label>
             <input
               type="text"
+              {...register("parcel_label", {
+                required: {
+                  value: true,
+                  message: "Field is required",
+                },
+              })}
               className="shadow-sm  border rounded py-2 px-3 mb-2 focus:outline-none w-full"
             />
+            {errors?.parcel_label && (
+              <FormInputErrorAlert message={errors?.parcel_label?.message} />
+            )}
             <div className="flex space-x-2 md:justify-between">
               <div>
                 <div>
                   <label htmlFor="">Sender</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register(
+                      "sender",
+                      { value: auth?.username },
+                      {
+                        required: {
+                          value: true,
+                          message: "Field is required",
+                        },
+                      }
+                    )}
+                    className="inputStyles"
+                  />
+                  {errors?.sender && (
+                    <FormInputErrorAlert message={errors?.sender?.message} />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Location From</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("location_from", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.location_from && (
+                    <FormInputErrorAlert
+                      message={errors?.location_from?.message}
+                    />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Location to</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("location_to", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.location_to && (
+                    <FormInputErrorAlert
+                      message={errors?.location_to?.message}
+                    />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Date Send</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="date"
+                    {...register("date_send", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.date_send && (
+                    <FormInputErrorAlert message={errors?.date_send?.message} />
+                  )}
                 </div>
               </div>
               <div>
                 <div>
                   <label htmlFor="">Recipient Name:</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("recipient_name", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.recipient_name && (
+                    <FormInputErrorAlert
+                      message={errors?.recipient_name?.message}
+                    />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Recipient Number:</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("recipient_number", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.recipient_number && (
+                    <FormInputErrorAlert
+                      message={errors?.recipient_number?.message}
+                    />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Recipient Email:</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("recipient_email", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.recipient_email && (
+                    <FormInputErrorAlert
+                      message={errors?.recipient_email?.message}
+                    />
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Parcel Amount</label>
-                  <input type="text" className="inputStyles" />
+                  <input
+                    type="text"
+                    {...register("parcel_amount", {
+                      required: {
+                        value: true,
+                        message: "Field is required",
+                      },
+                    })}
+                    className="inputStyles"
+                  />
+                  {errors?.parcel_amount && (
+                    <FormInputErrorAlert
+                      message={errors?.parcel_amount?.message}
+                    />
+                  )}
                 </div>
               </div>
             </div>
             <div className="flex justify-center my-4">
-              <button className="button">Create Parcel</button>
+              <button disabled={postingData} className="button">
+                {postingData ? "Loading..." : "Submit Parcel"}
+              </button>
             </div>
           </form>
         </div>
@@ -72,23 +228,29 @@ const Parcel = () => {
 
       <div className="w-5/6 md:w-4/6 lg:w-5/6 mx-auto lg:min-h-[80vh] py-8 ">
         <div>
-          <h2 className=" text-lg md:text-2xl  font-semibold mb-8">
+          <h2 className=" text-lg md:text-2xl text-center font-semibold mb-8">
             Update, Track and Cancel Parcels:
           </h2>
         </div>
-        <div className="flex flex-col gap-4 md:grid md:gap-4 lg:gap-10 grid-cols-12">
-          <div className="md:col-span-6 lg:col-span-4">
-            <OneParcel />
-          </div>
-          <div className="md:col-span-6 lg:col-span-4">
-            <OneParcel />
-          </div>
-          <div className="md:col-span-6 lg:col-span-4">
-            <OneParcel />
-          </div>
-          <div className="md:col-span-6 lg:col-span-4">
-            <OneParcel />
-          </div>
+        <div className="flex flex-col gap-4 lg:flex-row flex-wrap lg:justify-around justify-center lg:gap-10 ">
+          {parcels?.length > 0 ? (
+            parcels &&
+            parcels?.map((parcel) => (
+              <div className=" " key={parcel._id}>
+                <OneParcel
+                  id={parcel._id}
+                  sender={parcel.sender?.username}
+                  label={parcel.parcel_label}
+                  recipient={parcel.recipient_name}
+                  location_to={parcel.location_to}
+                  location_from={parcel.location_from}
+                  date={parcel.date_send}
+                />
+              </div>
+            ))
+          ) : (
+            <p>Loading..</p>
+          )}
         </div>
       </div>
     </section>

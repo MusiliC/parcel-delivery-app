@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
+import { useDispatch } from "react-redux";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { Link } from "react-router-dom";
-import AnchorLink from "react-anchor-link-smooth-scroll";
+import { signOut } from "../../redux/actions/authActions";
 
-const Navigation = ({ isTopOfPage }) => {
+const Navigation = ({ isTopOfPage, auth }) => {
   const [isMenuToggled, setIsMenuToggled] = useState(false);
+
+  const dispatch = useDispatch();
 
   const isAboveMedium = useMediaQuery("(min-width: 1060px)");
   const navbarBackground = isTopOfPage ? "" : "bg-primary-100 drop-shadow";
+
+  const handleLogOut = () => {
+    dispatch(signOut());
+    navigate("/sign");
+  };
 
   const links = [
     {
@@ -48,11 +56,26 @@ const Navigation = ({ isTopOfPage }) => {
                   ))}
               </div>
               {/* button */}
-              <div className="flex gap-8">
-                <button>user</button>
+              <div className="flex items-center gap-8">
+                {auth ? (
+                  <p className="font-semibold text-lg">{auth.username}</p>
+                ) : (
+                  <Link to={"/sign"}>
+                    <button
+                      className={
+                        !isTopOfPage
+                          ? "text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"
+                          : "bg-transparent hover:bg-primary-500  hover:text-white py-2 px-6 border border-primary-300 hover:border-transparent rounded"
+                      }
+                    >
+                      Sign In
+                    </button>
+                  </Link>
+                )}
                 {/* <button className=""> */}
-                <Link to={"/sign"}>
+                {auth ? (
                   <button
+                    onClick={handleLogOut}
                     className={
                       !isTopOfPage
                         ? "text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"
@@ -61,7 +84,7 @@ const Navigation = ({ isTopOfPage }) => {
                   >
                     log out
                   </button>
-                </Link>
+                ) : null}
               </div>
             </>
           ) : (
@@ -89,7 +112,17 @@ const Navigation = ({ isTopOfPage }) => {
           </div>
 
           <div className="flex flex-col ml-[33%] text-xl font-semibold gap-8">
-            <p>User</p>
+            {auth ? (
+              <p>{auth.username}</p>
+            ) : (
+              <Link
+                to={"/sign"}
+                onClick={() => setIsMenuToggled(!isMenuToggled)}
+              >
+                <button>Sign In</button>
+              </Link>
+            )}
+
             {links &&
               links.map((link) => (
                 <p key={link.name}>
@@ -102,14 +135,16 @@ const Navigation = ({ isTopOfPage }) => {
                 </p>
               ))}
 
-            <Link to={"/sign"}>
-              <button
-                className="text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"
-                onClick={() => setIsMenuToggled(!isMenuToggled)}
-              >
-                Log Out
-              </button>
-            </Link>
+            {auth ? (
+              <Link to={"/sign"}>
+                <button
+                  className="text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"
+                  onClick={() => setIsMenuToggled(!isMenuToggled)}
+                >
+                  Log Out
+                </button>
+              </Link>
+            ) : null}
           </div>
         </div>
       )}

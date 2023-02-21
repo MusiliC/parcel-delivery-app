@@ -24,6 +24,10 @@ body,
   @apply shadow-sm  border rounded w-full mb-2 py-1.5 px-3  focus:outline-none
 }
 
+.actionButtons{
+  @apply flex text-sm space-x-2 items-center border border-primary-300 p-1 md:p-2 hover:cursor-pointer hover:bg-primary-500 hover:border-none hover:text-white rounded-md;
+}
+
 .labelStyles {
   @apply w-full;
 }
