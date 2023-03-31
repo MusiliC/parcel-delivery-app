@@ -1,80 +1,126 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
 
 const { validateUser } = require("../helpers/userValidator");
 
 const User = require("../models/userModel");
+const Parcel = require("../models/parcelModel");
 
 //getUsers
 
-async function getUsers(req, res) {
-  try {
-    const users = await User.find({})
-      .sort({
-        isAdmin: -1,
-      })
-      .populate("parcels");
-    res.status(200).send(users);
-  } catch (error) {
-    res.status(500).send(error.message);
-    console.log(error);
+// async function getUsers(req, res) {
+//   try {
+//     const users = await User.find({})
+//       .sort({
+//         isAdmin: -1,
+//       })
+//       .populate("parcels");
+//     res.status(200).send(users);
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//     console.log(error);
+//   }
+// }
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find()
+    .select("-password")
+    .sort({
+      isAdmin: -1,
+    })
+    .lean();
+  if (!users?.length) {
+    return res.status(400).json({ message: "No users found" });
   }
-}
+  res.json(users);
+});
 
 //register user
 
-async function createUser(req, res) {
+// async function createUser(req, res) {
+//   const { error } = validateUser(req.body);
+//   if (error) return res.status(400).send(error.details[0].message);
+
+//   try {
+//     const { username, email, number, password } = req.body;
+
+//     //check if user exists
+//     let user = await User.findOne({ email: req.body.email });
+//     if (user) res.status(400).send("User with that email already exist..");
+
+//     user = new User({
+//       username,
+//       email,
+//       number,
+//       password,
+//     });
+
+//     const salt = await bcrypt.genSalt(10);
+
+//     user.password = await bcrypt.hash(user.password, salt);
+
+//     await user.save();
+
+//     //generating a token
+
+//     const secretKey = process.env.SECRET_KEY;
+
+//     const token = jwt.sign(
+//       {
+//         _id: user._id,
+//         username: user.username,
+//         email: user.email,
+//         isAdmin: user.isAdmin,
+//       },
+//       secretKey
+//     );
+
+//     //   return success response
+//     res.status(200).send({
+//       username: user.username,
+//       id: user._id,
+//       email: user.email,
+//       number: user.number,
+//       isAdmin: user.isAdmin,
+//       token,
+//     });
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//     console.log(error);
+//   }
+// }
+
+const createUser = asyncHandler(async (req, res) => {
+  //get data from client
+
+  const { username, email, number, password, isAdmin } = req.body;
+
+  //validate user
   const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  try {
-    //check if user exists
-    let user = await User.findOne({ email: req.body.email });
-    if (user) res.status(400).send("User with that email already exist..");
+  //check if user exists
+  let duplicateUser = await User.findOne({ email: req.body.email }).exec();
+  if (duplicateUser)
+    return res.status(409).send("User with that email already exist!");
 
-    const { username, email, number, password } = req.body;
+  const salt = await bcrypt.genSalt(10);
 
-    user = new User({
-      username,
-      email,
-      number,
-      password,
-    });
+  const hashedPwd = await bcrypt.hash(password, salt);
 
-    const salt = await bcrypt.genSalt(10);
+  const userObj = { username, email, number, password: hashedPwd, isAdmin };
 
-    user.password = await bcrypt.hash(user.password, salt);
+  //create and store new user
 
-    await user.save();
+  const user = User.create(userObj);
 
-    //generating a token
-
-    const secretKey = process.env.SECRET_KEY;
-
-    const token = jwt.sign(
-      {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        isAdmin: user.isAdmin,
-      },
-      secretKey
-    );
-
-    //   return success response
-    res.status(200).send({
-      username: user.username,
-      id: user._id,
-      email: user.email,
-      number: user.number,
-      isAdmin: user.isAdmin,
-      token,
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-    console.log(error);
+  if (user) {
+    res.status(201).json({ message: `New user  ${username} created` });
+  } else {
+    res.status(400).json({ message: "Invalid user data received" });
   }
-}
+});
 
 //sign user
 
@@ -120,21 +166,81 @@ async function signUser(req, res) {
   }
 }
 
+//update user
+
+const updateUser = asyncHandler(async (req, res) => {
+  const { id, username, email, number, password, isAdmin, isDelivered } =
+    req.body;
+
+  //confirm data
+
+  if (!id || !username || !email || !number || typeof isAdmin !== "boolean") {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  const user = await User.findById(id).exec();
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  //check for duplicate
+
+  const duplicate = await User.findOne({ email })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
+
+  //allows update to the original users
+
+  if (duplicate && duplicate?._id.toString() !== id) {
+    return res.status(409).json({ message: "Duplicate email " });
+  }
+
+  user.username = username;
+  user.email = email;
+  user.number = number;
+  user.isAdmin = isAdmin;
+
+  if (password) {
+    //hash password
+    const salt = await bcrypt.genSalt(10);
+
+    user.password = await bcrypt.hash(password, salt);
+  }
+
+  const updatedUser = await user.save();
+
+  res.json({ message: `User ${updatedUser.username} updated` });
+});
+
 //delete user
 
-async function deleteUser(req, res) {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).send("User not found..");
-    const deleteAUser = await User.findByIdAndDelete(req.params.id);
-    res.status(200).send({
-      message: "User deleted...",
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-    console.log(error);
+const deleteUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "user ID is required" });
   }
-}
+
+  const parcel = await Parcel.findOne({ sender: id }).lean().exec();
+
+  if (parcel) {
+    return res.status(400).json({ message: "User has assigned parcels" });
+  }
+
+  const user = await User.findById(id).exec();
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  const result = await user.deleteOne();
+
+  const reply = `Username ${result.username} with ID ${result._id} deleted`;
+
+  res.json(reply);
+});
 
 //one user
 
@@ -155,4 +261,5 @@ module.exports = {
   signUser,
   deleteUser,
   oneUser,
+  updateUser,
 };

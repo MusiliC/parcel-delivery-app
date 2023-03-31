@@ -20,11 +20,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
-    parcels: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Parcel",
-      default: [],
-    },
+  
     isAdmin: {
       type: Boolean,
       default: false,
