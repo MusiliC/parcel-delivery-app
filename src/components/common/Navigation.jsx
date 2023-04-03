@@ -26,11 +26,11 @@ const Navigation = ({ isTopOfPage, auth }) => {
 
     {
       name: "Parcels",
-      nav: "/parcels",
+      nav: "/dash/parcels",
     },
     {
       name: "Contact Us",
-      nav: "/contact",
+      nav: "/dash/contact",
     },
   ];
 

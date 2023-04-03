@@ -4,7 +4,7 @@ import OneParcel from "./OneParcel";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createParcel, getParcels } from "../../redux/actions/parcelActions";
-import FormInputErrorAlert from "../common/FormInputErrorAlert";
+import FormInputErrorAlert from "../../components/common/FormInputErrorAlert";
 
 const Parcel = ({ auth }) => {
   const [postingData, setPostingData] = useState(false);

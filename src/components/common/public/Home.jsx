@@ -1,5 +1,5 @@
 import React from "react";
-import pic1 from "../../assets/food-delivery-5217579_640.png";
+import pic1 from "../../../assets/food-delivery-5217579_640.png";
 import { BellIcon, EnvelopeIcon, TruckIcon } from "@heroicons/react/24/solid";
 
 import ServiceCard from "./ServiceCard";

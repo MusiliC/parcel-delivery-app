@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import FormInputErrorAlert from "../common/FormInputErrorAlert";
+import man from "../../assets/man-7716120_640.png";
+import FormInputErrorAlert from "../../components/common/FormInputErrorAlert";
 import { signIn, signUp } from "../../redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 
@@ -42,11 +43,19 @@ const Auth = () => {
   };
 
   return (
-    <section className="py-32 md:min-h-[90vh] ">
-      <div className="w-5/6 mx-auto md:w-3/6 lg:w-2/6 border p-6 rounded-md">
+    <section className="py-16 md:min-h-[80vh] md:flex items-center  justify-center  ">
+      <div className="hidden lg:flex justify-center w-1/2 lg:min-h-[80vh] ">
+        <img src={man} alt="" className=" w-[80%] object-cover " />
+      </div>
+      <div className="w-5/6 mx-auto lg:mx-0 md:w-3/6 lg:w-1/3 border md:min-h-[40vh]  bg-yellow-50 lg:min-h-[80vh] p-6 py-10 rounded-md">
         <div>
-          <h2 className=" text-xl text-center lg:w-4/6 mx-auto font-semibold mb-2">
-            {isSignUp ? <p>Sign In</p> : <p> Create Account</p>}
+          <h2 className=" text-4xl text-center  lg:w-4/6 mx-auto font-semibold my-6">
+            {/* {isSignUp ? <p>Sign In</p> : <p> Register</p>} */} SendIt App
+          </h2>
+          <h2 className=" text-sm md:text-base  text-center text-gray-400 font-semibold mx-auto  my-4">
+            {isSignUp ? null : (
+              <p> Register to send and deliver parcels to your friends</p>
+            )}
           </h2>
           <form action="" onSubmit={handleSubmit(handleAuth)}>
             {isSignUp ? (
@@ -156,7 +165,7 @@ const Auth = () => {
 
             <div className="flex justify-center">
               {isSignUp ? (
-                <button className="button">
+                <button className="button mt-6">
                   {postingData ? "Loading..." : "Sign In"}
                 </button>
               ) : (
@@ -167,7 +176,7 @@ const Auth = () => {
             </div>
 
             {isSignUp ? (
-              <div className="my-5">
+              <div className="my-5 mt-10">
                 <p
                   className="font-semibold  underline hover:cursor-pointer"
                   onClick={() => setIsSignUp(false)}

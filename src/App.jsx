@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import Navigation from "./components/common/Navigation";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Home from "./components/home/Home";
-import Footer from "./components/common/Footer";
-import Parcel from "./components/parcel/Parcel";
+import Home from "./components/common/public/Home";
+import Parcel from "./features/parcel/Parcel";
 import PageNotFound from "./components/PageNotFound";
 import Contact from "./components/contact/Contact";
-import Auth from "./components/auth/Auth";
+import Auth from "./features/auth/Auth";
 import AuthWrapper from "./components/AuthWrapper";
-import UpdateParcel from "./components/parcel/UpdateParcel";
+import UpdateParcel from "./features/parcel/UpdateParcel";
+import Layout from "./components/common/Layout";
+import DashLayout from "./components/common/ParcelLayout";
 
 function App() {
   const [isTopOfPage, setIsTopOfPage] = useState(true);
@@ -28,24 +29,43 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
-      <Router>
-        <Navigation isTopOfPage={isTopOfPage} auth={auth} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* <Route
-            path="/parcels"
-            element={auth ? <Parcel auth={auth} /> : <Auth />}
-          /> */}
-          <Route path="/parcels" element={<Parcel auth={auth} />} />
-          <Route path="*" element={<PageNotFound />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/parcels/:id" element={<UpdateParcel />} />
-          <Route path="/sign" element={<Auth />} />
-        </Routes>
-        <Footer />
-      </Router>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* <Navigation isTopOfPage={isTopOfPage} auth={auth} /> */}
+
+        {/* public routes */}
+
+        <Route index element={<Auth />} />
+
+        {/* protected routes */}
+
+        <Route path="dash" element={<DashLayout />}>
+          <Route index element={<Home />} />
+
+          {/* parcels routes */}
+
+          <Route path="parcels">
+            <Route index element={<Parcel auth={auth} />} />
+            <Route path=":id" element={<UpdateParcel />} />
+          </Route>
+
+          {/* users */}
+
+          <Route path="users">
+            <Route index element="users" />
+          </Route>
+
+          {/* contact page */}
+
+          <Route path="contact">
+            <Route index element={<Contact />} />
+          </Route>
+        </Route>
+        {/* end of dash */}
+      </Route>
+      <Route path="*" element={<PageNotFound />} />
+      {/* end of public routes */}
+    </Routes>
   );
 }
 

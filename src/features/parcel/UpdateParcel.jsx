@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import FormInputErrorAlert from "../common/FormInputErrorAlert";
+import FormInputErrorAlert from "../../components/common/FormInputErrorAlert";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
