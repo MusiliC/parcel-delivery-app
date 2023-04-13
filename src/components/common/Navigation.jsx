@@ -3,7 +3,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useDispatch } from "react-redux";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { Link } from "react-router-dom";
-import { signOut } from "../../redux/actions/authActions";
+
 
 const Navigation = ({ isTopOfPage, auth }) => {
   const [isMenuToggled, setIsMenuToggled] = useState(false);
@@ -13,10 +13,10 @@ const Navigation = ({ isTopOfPage, auth }) => {
   const isAboveMedium = useMediaQuery("(min-width: 1060px)");
   const navbarBackground = isTopOfPage ? "" : "bg-primary-100 drop-shadow";
 
-  const handleLogOut = () => {
-    dispatch(signOut());
-    navigate("/sign");
-  };
+  // const handleLogOut = () => {
+  //   dispatch(signOut());
+  //   navigate("/sign");
+  // };
 
   const links = [
     {
@@ -75,7 +75,7 @@ const Navigation = ({ isTopOfPage, auth }) => {
                 {/* <button className=""> */}
                 {auth ? (
                   <button
-                    onClick={handleLogOut}
+                    // onClick={handleLogOut}
                     className={
                       !isTopOfPage
                         ? "text-white py-2 px-6 rounded-md bg-primary-500 border-transparent"

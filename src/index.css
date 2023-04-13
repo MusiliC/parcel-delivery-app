@@ -12,22 +12,42 @@ body,
 }
 
 .button {
-  @apply rounded-md bg-primary-500 font-semibold text-white px-10 py-2 hover:bg-secondary-100 hover:text-black;
+  @apply rounded-md bg-primary-500  text-sm md:text-base text-white px-10 py-2 hover:bg-secondary-100 hover:text-black;
+}
+
+.smallBtn {
+  @apply rounded-md bg-primary-500  text-sm md:text-base text-white px-4 py-1.5 hover:bg-secondary-100 hover:text-black;
+}
+
+.outlineBtn{
+   @apply rounded-md border  border-primary-500  text-sm md:text-base  px-4 py-1.5 hover:bg-primary-500 hover:text-white 
 }
 
 /* .inputStyles {
   @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline;
 } */
 
-
-.inputStyles{
-  @apply shadow-sm  border rounded w-full mb-2 py-1.5 px-3  focus:outline-none
+.inputStyles {
+  @apply shadow-sm text-sm md:text-base border rounded w-full mb-2 py-1.5 px-3  focus:outline-none;
 }
 
-.actionButtons{
+.loading {
+  @apply font-semibold  bg-secondary-100 px-10 py-3 rounded-md text-sm md:text-base;
+}
+
+.errMessage {
+  @apply bg-secondary-300 font-semibold rounded-md p-3 text-sm md:text-base;
+}
+
+.actionButtons {
   @apply flex text-sm space-x-2 items-center border border-primary-300 p-1 md:p-2 hover:cursor-pointer hover:bg-primary-500 hover:border-none hover:text-white rounded-md;
 }
 
 .labelStyles {
-  @apply w-full;
+  @apply w-full text-sm md:text-base;
+}
+
+
+.tdClass{
+  @apply py-4 px-4 font-medium text-gray-900 whitespace-nowrap;
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Navigation from "./components/common/Navigation";
 import { Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
 import Home from "./components/common/public/Home";
 import Parcel from "./features/parcel/Parcel";
 import PageNotFound from "./components/PageNotFound";
@@ -11,11 +10,21 @@ import AuthWrapper from "./components/AuthWrapper";
 import UpdateParcel from "./features/parcel/UpdateParcel";
 import Layout from "./components/common/Layout";
 import DashLayout from "./components/common/ParcelLayout";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchUsers,
+  selectAllUsers,
+  selectUserById,
+} from "./features/auth/authSlice";
+import UsersList from "./features/auth/UsersList";
+import UpdateUser from "./features/auth/UpdateUser";
 
 function App() {
   const [isTopOfPage, setIsTopOfPage] = useState(true);
 
-  const auth = useSelector((state) => state.authReducer.authUser);
+  const dispatch = useDispatch();
+
+  // const auth = useSelector((state) => state.authReducer.authUser);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,8 +40,6 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* <Navigation isTopOfPage={isTopOfPage} auth={auth} /> */}
-
         {/* public routes */}
 
         <Route index element={<Auth />} />
@@ -45,14 +52,15 @@ function App() {
           {/* parcels routes */}
 
           <Route path="parcels">
-            <Route index element={<Parcel auth={auth} />} />
+            <Route index element={<Parcel />} />
             <Route path=":id" element={<UpdateParcel />} />
           </Route>
 
           {/* users */}
 
           <Route path="users">
-            <Route index element="users" />
+            <Route index element={<UsersList />} />
+            <Route path=":id" element={<UpdateUser />} />
           </Route>
 
           {/* contact page */}

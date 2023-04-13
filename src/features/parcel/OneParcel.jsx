@@ -5,12 +5,14 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteParcel } from "./parcelSlice";
 import moment from "moment";
 import React from "react";
-import { deleteParcel } from "../../redux/actions/parcelActions";
+
 import { useNavigate } from "react-router-dom";
 
 const OneParcel = ({
+  isDelivered,
   id,
   sender,
   label,
@@ -28,11 +30,19 @@ const OneParcel = ({
   };
 
   const handleUpdate = (new_id) => {
-    navigate(`/parcels/${new_id}`);
+    navigate(`/dash/parcels/${new_id}`);
   };
 
   return (
     <div className=" bg-secondary-100 rounded-md py-8 space-y-4  px-5 md:px-8 shadow-sm hover:cursor-pointer hover:bg-gray-100 ">
+      <div className="w-full bg-primary-100 rounded-md py-1.5 flex gap-5 justify-center text-sm md:text-base font-semibold">
+        Parcel Status:
+        {isDelivered === true ? (
+          <p className="font-semibold">Yes, Delivered</p>
+        ) : (
+          <p className="font-semibold">Not Delivered</p>
+        )}
+      </div>
       <div className="flex justify-between space-x-4 text-sm">
         <div>
           <h2>

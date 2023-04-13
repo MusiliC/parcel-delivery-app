@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import man from "../../assets/man-7716120_640.png";
 import FormInputErrorAlert from "../../components/common/FormInputErrorAlert";
-import { signIn, signUp } from "../../redux/actions/authActions";
+
 import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
-  // const auth = useSelector((state) => state.authReducer);
-  // console.log(auth);
+
 
   const navigate = useNavigate();
 
@@ -24,26 +23,26 @@ const Auth = () => {
     formState: { errors },
   } = useForm();
 
-  const handleAuth = async (data) => {
-    if (isSignUp) {
-      setPostingData(true);
-      const { success, auth } = await dispatch(signUp(data));
-      setPostingData(false);
-      if (success) {
-        navigate("/");
-      }
-    } else {
-      setPostingData(true);
-      const { success, auth } = await dispatch(signIn(data));
-      setPostingData(false);
-      if (success) {
-        navigate("/");
-      }
-    }
-  };
+  // const handleAuth = async (data) => {
+  //   if (isSignUp) {
+  //     setPostingData(true);
+  //     const { success, auth } = await dispatch(signUp(data));
+  //     setPostingData(false);
+  //     if (success) {
+  //       navigate("/");
+  //     }
+  //   } else {
+  //     setPostingData(true);
+  //     const { success, auth } = await dispatch(signIn(data));
+  //     setPostingData(false);
+  //     if (success) {
+  //       navigate("/");
+  //     }
+  //   }
+  // };
 
   return (
-    <section className="py-16 md:min-h-[80vh] md:flex items-center  justify-center  ">
+    <section className="py-16 md:min-h-[80vh] md:flex lg:flex-row-reverse items-center  justify-center  ">
       <div className="hidden lg:flex justify-center w-1/2 lg:min-h-[80vh] ">
         <img src={man} alt="" className=" w-[80%] object-cover " />
       </div>
@@ -57,7 +56,7 @@ const Auth = () => {
               <p> Register to send and deliver parcels to your friends</p>
             )}
           </h2>
-          <form action="" onSubmit={handleSubmit(handleAuth)}>
+          <form action="" >
             {isSignUp ? (
               <div>
                 <div>

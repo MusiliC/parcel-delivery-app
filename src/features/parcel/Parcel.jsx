@@ -3,14 +3,18 @@ import picture from "../../assets/picture.png";
 import OneParcel from "./OneParcel";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { createParcel, getParcels } from "../../redux/actions/parcelActions";
+import { fetchParcels, newParcel } from "./parcelSlice";
+import { selectAllParcels } from "./parcelSlice";
 import FormInputErrorAlert from "../../components/common/FormInputErrorAlert";
+
+import { useNavigate } from "react-router-dom";
 
 const Parcel = ({ auth }) => {
   const [postingData, setPostingData] = useState(false);
 
+  const { parcels, isLoading, error } = useSelector(selectAllParcels);
+
   const dispatch = useDispatch();
-  const parcels = useSelector((state) => state.parcelReducer.parcels);
 
   const {
     register,
@@ -21,21 +25,19 @@ const Parcel = ({ auth }) => {
   } = useForm();
 
   const handleInput = async (data) => {
-    const obj = {
-      ...data,
-      sender: auth.id,
-    };
+
 
     setPostingData(true);
-    await dispatch(createParcel(obj));
+    await dispatch(newParcel(data));
     setPostingData(false);
+    reset();
   };
 
   useEffect(() => {
-    dispatch(getParcels());
+    dispatch(fetchParcels());
   }, []);
 
-  useEffect(() => {}, [auth]);
+  // useEffect(() => {}, [auth]);
   return (
     <section className="py-28 min-h-[90vh]">
       <div className="w-[90%] md:w-4/6 lg:w-5/6 mx-auto  lg:min-h-[80vh]  lg:flex justify-between gap-8 items-center">
@@ -233,11 +235,12 @@ const Parcel = ({ auth }) => {
           </h2>
         </div>
         <div className="flex flex-col gap-4 lg:flex-row flex-wrap lg:justify-around justify-center lg:gap-10 ">
-          {parcels?.length > 0 ? (
+          {parcels.length > 0 && !isLoading ? (
             parcels &&
             parcels?.map((parcel) => (
               <div className=" " key={parcel._id}>
                 <OneParcel
+                  isDelivered={parcel.isDelivered}
                   id={parcel._id}
                   sender={parcel.sender?.username}
                   label={parcel.parcel_label}
@@ -248,8 +251,12 @@ const Parcel = ({ auth }) => {
                 />
               </div>
             ))
+          ) : parcels.length === 0 && !isLoading ? (
+            <p className="errMessage">No parcels for current user!</p>
+          ) : isLoading && error ? (
+            <p className="errMessage">{error}...</p>
           ) : (
-            <p>Loading..</p>
+            <p className="loading">Loading...</p>
           )}
         </div>
       </div>
